@@ -2,16 +2,22 @@
 acm.rs
 Cameron Fisher
 Section 1
-Last Modified: 11/27/22
+Last Modified: 12/04/22
 
 The access control matrix module
 */
 
+// Imports
+use std::collections::HashMap;
+
 // ACM Structure
 pub struct ACM{
-    // Roles Array in order:
+    // Roles Array (Row, 2nd num) in order:
     // author, editor, associate_editor, reviewer
-    roles: [[bool;5] ; 4]
+    // Actions/Permissions (Column, 1st num) array in order:
+    // submit, invite_associates, invite_reviewers, submit_review, make_recommendation
+    acm: [[bool; 5]; 4],
+    roles: HashMap<String, usize>,
 }
 
 // Generates ACM for main.rs such that it can be passed to the action functions
@@ -32,10 +38,17 @@ pub fn gen_acm() -> ACM {
     let reviewer_actions = [false, false, false, true, true];
 
     // Compile permissions into 2D matrix
-    let acm_matrix = [author_actions, editor_actions, associate_editor_actions, reviewer_actions];
+    let ac_matrix = [author_actions, editor_actions, associate_editor_actions, reviewer_actions];
+
+    // Create HashMap of roles
+    let mut roles: HashMap<String, usize>  = HashMap::new();
+    roles.insert(String::from("author"), 1);
+    roles.insert(String::from("editor"),2 );
+    roles.insert(String::from("associate editor"), 3);
+    roles.insert(String::from("reviewer"), 4);
 
     // Create ACM struct
-    let acm = ACM {roles: acm_matrix};
+    let acm = ACM {acm: ac_matrix, roles: roles};
 
     acm
 }
@@ -57,18 +70,56 @@ pub fn print_acm() {
 }
 
 // User Actions
-pub fn submit_manuscript() {
-    println!("test");
+pub fn submit_manuscript(acm: ACM, role: &str) {
+    let role_index = acm.roles.get(&String::from(role));
+    
+    if acm.acm[1][*role_index.unwrap()] == true {
+        println!("Allowed")
+    } else {
+        println!("Not Allowed")
+    }
 }
-pub fn invite_editors() {
-    println!("test");
+
+
+pub fn invite_editors(acm: ACM, role: &str) {
+        let role_index = acm.roles.get(&String::from(role));
+    
+    if acm.acm[1][*role_index.unwrap()] == true {
+        println!("Allowed")
+    } else {
+        println!("Not Allowed")
+    }
 }
-pub fn invite_reviewers() {
-    println!("test");
+
+
+pub fn invite_reviewers(acm: ACM, role: &str) {
+        let role_index = acm.roles.get(&String::from(role));
+    
+    if acm.acm[2][*role_index.unwrap()] == true {
+        println!("Allowed")
+    } else {
+        println!("Not Allowed")
+    }
 }
-pub fn submit_review() {
-    println!("test");
+
+
+pub fn submit_review(acm: ACM, role: &str) {
+        let role_index = acm.roles.get(&String::from(role));
+    
+    if acm.acm[3][*role_index.unwrap()] == true {
+        println!("Allowed")
+    } else {
+        println!("Not Allowed")
+    }
 }
-pub fn make_recommendation() {
-    println!("test");
+
+
+pub fn make_recommendation(acm: ACM, role: &str) {
+        let role_index = acm.roles.get(&String::from(role));
+    
+    if acm.acm[4][*role_index.unwrap()] == true {
+        println!("Allowed")
+    } else {
+        println!("Not Allowed")
+    }
 }

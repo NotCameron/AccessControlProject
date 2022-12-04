@@ -32,38 +32,48 @@ struct Admin<> {
 // Main Function
 fn main() -> Result<(), Box<dyn Error>>{
     // Create ACM
+    // Configure in acm.rs
     let access_control = acm::gen_acm();
+    acm::print_acm();
 
     // Login Prompt
-    println!("1. Login as User");
-    println!("2. Login as Admin");
-    println!("3. Register User");
+    let mut logged_in = false;
+    while !logged_in {
+        println!("1. Login as User");
+        println!("2. Login as Admin");
+        println!("3. Register User");
+        let mut selection = String::new();
+        std::io::stdin().read_line(&mut selection);
+        let selection = selection.trim();
+        match selection {
+            "1" => logged_in = user_login(),
+            "2" => admin_login().unwrap(),
+            _ => invalid_input().unwrap()
+        };
+    }
+
+    // User Action Prompt
+    println!("1. Submit manuscript");
+    println!("2. Invite associate editors");
+    println!("3. Invite reviewers");
+    println!("4. Submit review");
+    println!("5. Make recommendation");
     let mut selection = String::new();
     std::io::stdin().read_line(&mut selection);
     let selection = selection.trim();
     match selection {
-        "1" => user_login().unwrap(),
-        "2" => admin_login().unwrap(),
+        "1" => acm::submit_manuscript(),
+        "2" => acm::invite_editors(),
+        "3" => acm::invite_reviewers(),
+        "4" => acm::submit_review(),
+        "5" => acm::make_recommendation(),
         _ => invalid_input().unwrap()
     };
-
-    // Action Prompt
-    println!("1. Login as User");
-    println!("2. Login as Admin");
-    let mut selection = String::new();
-    std::io::stdin().read_line(&mut selection);
-    let selection = selection.trim();
-    match selection {
-        "1" => user_login().unwrap(),
-        "2" => admin_login().unwrap(),
-        _ => invalid_input().unwrap()
-    };
-
 
     Ok(())
 }
 
-fn user_login() -> Result<(), Box<dyn Error>>{
+fn user_login() -> bool {
     let mut logged_in = false;
     println!("Loading Users...");
 
@@ -81,16 +91,18 @@ fn user_login() -> Result<(), Box<dyn Error>>{
         let pass = pass.trim();
 
         // CSV Reader reads csv file of users
-        let mut reader = csv::Reader::from_path("./users.csv")?;
+        let mut reader = csv::Reader::from_path("./users.csv").unwrap();
         let result = reader.records();
         
         // Iterate through CSV Results for match
         for record in result {
-            let record = record?;
+            let record = record.unwrap();
             // 3rd index (get(2)) and 4th index (get(3)) are username and password respectively. 
             // Need to unwrap() to get &str and trim() to pare down to the ASCII characters alone
             if user == String::from(record.get(2).unwrap().trim()) && pass == String::from(record.get(3).unwrap().trim()) {
                 logged_in = true;
+                // Get role, possibly for returning later in lieu of a boolean.
+                let role = record.get(4).unwrap().trim();
                 break;
             }
         }
@@ -109,21 +121,15 @@ fn user_login() -> Result<(), Box<dyn Error>>{
 
     if logged_in {
         println!("Log in works!");
+        return true;
     }
-    Ok(())
+
+    false
 }
 
 fn admin_login() -> Result<(), Box<dyn Error>>{
     println!("test");
-    Ok(())
-}
-
-fn invalid_input() -> Result<(), Box<dyn Error>>{
-    println!("Invalid input!");
-    Ok(())
-}
-
-//     println!("Loading Admins...")
+    //     println!("Loading Admins...")
 //     // Vector of admins
 //     let mut admins = vec![];
 
@@ -145,5 +151,12 @@ fn invalid_input() -> Result<(), Box<dyn Error>>{
 //         admins.push(admin);
 //     }
 
-// Ok(())
-// }
+    Ok(())
+}
+
+fn invalid_input() -> Result<(), Box<dyn Error>>{
+    println!("Invalid input!");
+    Ok(())
+}
+
+

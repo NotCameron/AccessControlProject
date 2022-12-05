@@ -68,8 +68,25 @@ fn main() -> Result<(), Box<dyn Error>>{
     }
 
     // Admin Actions Prompt
-    if admin_logged_in {
-        println!("admin logged in")
+    loop {
+        if admin_logged_in {
+            // Create ACM
+            // Configure default in acm.rs
+            let access_control = acm::gen_acm();
+            let role = &user_logged_in.to_ascii_lowercase();
+            println!("1. Print Access Control Matrix");
+            println!("2. Close program");
+            let mut selection = String::new();
+            std::io::stdin().read_line(&mut selection);
+            let selection = selection.trim();
+            match selection {
+                "1" => acm::print_acm(access_control),
+                "2" => break,
+                _ => invalid_input().unwrap()
+            };
+        } else {
+            break;
+        }
     }
 
     Ok(())

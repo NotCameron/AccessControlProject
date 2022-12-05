@@ -6,8 +6,8 @@ Last Modified: 12/04/22
 */
 
 // Import Modules
-pub mod acm; //Access Control Matrix
-pub mod login; //Login Functions
+pub mod acm; // Access Control Matrix
+pub mod login; // Login Functions
 use std::{error::Error};
 
 
@@ -43,7 +43,9 @@ fn main() -> Result<(), Box<dyn Error>>{
             // Create ACM
             // Configure default in acm.rs
             let access_control = acm::gen_acm();
-            let role = &user_logged_in.to_ascii_lowercase();
+            let role = &user_logged_in.to_ascii_lowercase(); // Send into function for permission cehcking
+            
+            // Menu
             println!("1. Submit manuscript");
             println!("2. Invite associate editors");
             println!("3. Invite reviewers");
@@ -74,6 +76,8 @@ fn main() -> Result<(), Box<dyn Error>>{
             // Configure default in acm.rs
             let access_control = acm::gen_acm();
             let role = &user_logged_in.to_ascii_lowercase();
+            
+            // Menu
             println!("1. Print Access Control Matrix");
             println!("2. Close program");
             let mut selection = String::new();

@@ -8,7 +8,8 @@ Last Modified: 12/04/22
 use csv; //CSV parsing for creating test users
 
 
-
+// User login
+// Returns String of role for the purpose of checking ACM permissions
 // Change to return a Result at some point. Seems to be best practice and allows for error handling
 pub fn user_login() -> String {
     let mut logged_in = false;
@@ -63,6 +64,9 @@ pub fn user_login() -> String {
     return String::from("0")
 }
 
+// Admin login
+// Admin's do not have a role hence the unique login function that returns a bool
+// Change to return a Result at some point. Seems to be best practice and allows for error handling
 pub fn admin_login() -> bool {
     println!("Loading Admins...");
     let mut logged_in = false;

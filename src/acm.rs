@@ -74,6 +74,7 @@ pub fn print_acm(acm: ACM) {
 
 }
 
+// For formatting the table printing to look neat
 fn acm_str(perm: bool) -> &'static str {
     if perm {
         return " true"
